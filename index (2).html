@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea y Emprende Uco</title>
+    <!-- Incluimos Tailwind CSS para un diseño moderno y responsive -->
+     <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            position: relative; /* Necesario para el carrito fijo */
+        }
+        /* Estilos personalizados para un mejor aspecto */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+        .cart-container {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            z-index: 50;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        }
+        .cart-container.active {
+            transform: translateX(0);
+        }
+        @media (max-width: 640px) {
+            .cart-container {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+        }
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* Estilos para la notificación */
+        #notification-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: #2D3748; /* bg-gray-800 */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 9999px; /* rounded-full */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #notification-message.active {
+            opacity: 1;
+        }
+    </style>
+    
+    <!-- Google tag (gtag.js) -->
+    <!-- IMPORTANTE: Reemplaza 'G-XXXXXXXXXX' con tu ID de medición de Google Analytics. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Sección de Cabecera (Hero Section) -->
+    <header class="bg-green-600 text-white py-16 md:py-24 text-center rounded-b-3xl shadow-lg relative">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Crea y Emprende Uco</h1>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8">
+                Creamos páginas digitales para ayudar a realizar marketing a los negocios rurales del centro poblado de Uco.
+            </p>
+            <a href="#proyecto" class="bg-yellow-400 text-green-800 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 transition duration-300">
+                Conoce nuestro proyecto
+            </a>
+        </div>
+        <!-- Botón de la Canastilla -->
+        <button id="cart-button" class="absolute top-4 right-4 bg-white text-green-600 rounded-full p-3 shadow-lg hover:bg-gray-100 transition duration-300">
+            <!-- Icono de la canastilla -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">0</span>
+        </button>
+    </header>
+
+    <!-- Notificación de mensaje (añadida para corregir el error) -->
+    <div id="notification-message" class="hidden"></div>
+
+    <!-- Contenido Principal -->
+    <main id="main-content">
+        <!-- Sección "Nuestro Proyecto" -->
+        <section id="proyecto" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-green-700">Nuestro Proyecto</h2>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-8">
+                        <!-- Problema -->
+                        <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                            <h3 class="text-2xl font-bold text-green-600 mb-3">El Problema</h3>
+                            <p class="text-gray-600">
+                                Los negocios de Uco producen derivados lácteos de gran calidad, pero enfrentan una falta de promoción debido al acceso limitado a internet y a la ausencia de conocimientos en marketing digital. Esto afecta directamente sus ventas y calidad de vida.
+                            </p>
+                        </div>
+                        <!-- Solución -->
+                        <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                            <h3 class="text-2xl font-bold text-green-600 mb-3">Nuestra Solución</h3>
+                            <p class="text-gray-600">
+                                Ofrecemos la creación de páginas digitales personalizadas y perfiles en redes sociales para que estos emprendedores puedan promocionar sus productos, conectar con nuevos clientes y recibir pedidos de manera sencilla.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Imagen representativa -->
+                    <div class="hidden md:block">
+                        <img src="https://placehold.co/600x400/98C1D9/FFFFFF?text=Negocios+en+Uco" alt="Imagen de negocios en Uco" class="rounded-2xl shadow-lg w-full h-auto">
+                    </div>
+                </div>
+                
+                <div class="mt-16 grid md:grid-cols-2 gap-12">
+                    <!-- Propuesta de Valor -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <h3 class="text-2xl font-bold text-green-600 mb-3">Propuesta de Valor</h3>
+                        <p class="text-gray-600">
+                            Brindamos una solución accesible, económica y personalizada de marketing digital a negocios que nunca han tenido presencia online, ayudándoles a aumentar sus ventas y mejorar sus ingresos familiares.
+                        </p>
+                    </div>
+                    <!-- Innovación -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <h3 class="text-2xl font-bold text-green-600 mb-3">Innovación</h3>
+                        <p class="text-gray-600">
+                            Nuestra innovación radica en adaptar herramientas digitales sencillas (páginas web, redes sociales, códigos QR) a contextos rurales con bajo acceso a internet, combinando creatividad y soporte personalizado.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Productos Destacados (Carrusel) -->
+        <section id="productos" class="bg-green-100 py-16 md:py-24">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-green-700">Productos Destacados</h2>
+                <div class="carousel-container flex gap-8 pb-4">
+                    <!-- Producto 1 -->
+                    <div class="flex-none w-64 bg-white p-6 rounded-2xl shadow-lg card" data-id="1" data-name="Queso Artesanal" data-price="25.00">
+                        <img src="https://placehold.co/200x200/A3BE8C/FFFFFF?text=Queso+Artesanal" alt="Queso Artesanal" class="rounded-lg mx-auto mb-4">
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Queso Artesanal</h4>
+                        <p class="text-gray-600 mb-4">Elaborado con leche fresca de vaca de la zona de Uco. Sabor único y tradicional.</p>
+                        <p class="text-lg font-bold text-green-600 mb-4">S/ 25.00</p>
+                        <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300">
+                            Añadir a la Canastilla
+                        </button>
+                    </div>
+                    <!-- Producto 2 -->
+                    <div class="flex-none w-64 bg-white p-6 rounded-2xl shadow-lg card" data-id="2" data-name="Yogurt Natural" data-price="15.00">
+                        <img src="https://placehold.co/200x200/A3BE8C/FFFFFF?text=Yogurt+Natural" alt="Yogurt Natural" class="rounded-lg mx-auto mb-4">
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Yogurt Natural</h4>
+                        <p class="text-gray-600 mb-4">Yogurt cremoso y sin aditivos, ideal para un desayuno saludable. 100% natural.</p>
+                        <p class="text-lg font-bold text-green-600 mb-4">S/ 15.00</p>
+                        <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300">
+                            Añadir a la Canastilla
+                        </button>
+                    </div>
+                    <!-- Producto 3 -->
+                    <div class="flex-none w-64 bg-white p-6 rounded-2xl shadow-lg card" data-id="3" data-name="Mantequilla Casera" data-price="20.00">
+                        <img src="https://placehold.co/200x200/A3BE8C/FFFFFF?text=Mantequilla+Casera" alt="Mantequilla Casera" class="rounded-lg mx-auto mb-4">
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Mantequilla Casera</h4>
+                        <p class="text-gray-600 mb-4">Mantequilla tradicional hecha a mano, con un sabor incomparable.</p>
+                        <p class="text-lg font-bold text-green-600 mb-4">S/ 20.00</p>
+                        <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300">
+                            Añadir a la Canastilla
+                        </button>
+                    </div>
+                    <!-- Agrega más productos aquí si lo deseas -->
+                </div>
+                <p class="text-gray-600 mt-4">Desliza para ver más productos.</p>
+            </div>
+        </section>
+
+        <!-- Sección de Impacto -->
+        <section id="impacto" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-green-700">Impacto y Resultados</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Impacto Social -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-green-600">Impacto Social</h3>
+                        <p class="text-gray-600">
+                            Mejora de la economía familiar, inclusión digital y mayor visibilidad del trabajo local en la comunidad de Uco.
+                        </p>
+                    </div>
+                    <!-- Impacto Ambiental -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.31-.617a1.858 1.858 0 01-1.023-.547L9.98 10.18a1.858 1.858 0 00-1.023-.547l-2.31-.617a2 2 0 00-1.022.547l-2.31.617a1.858 1.858 0 01-1.023.547L3.98 12.18a1.858 1.858 0 00-1.023.547l-2.31.617a2 2 0 00-1.022-.547L0 12.18l-2.31-.617a1.858 1.858 0 01-1.023-.547zM19 12a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-green-600">Impacto Ambiental</h3>
+                        <p class="text-gray-600">
+                            Reducción de la impresión de volantes y afiches, promoviendo una solución digital más sostenible y ecológica.
+                        </p>
+                    </div>
+                    <!-- Lecciones Aprendidas -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-.646 0-1.282.083-1.9.24A1.97 1.97 0 009.11 5.378M12 11c0 3.313-2.687 6-6 6-3.314 0-6-2.687-6-6s2.686-6 6-6c3.313 0 6 2.687 6 6z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-green-600">Lecciones Aprendidas</h3>
+                        <p class="text-gray-600">
+                            La gente sí quiere aprender tecnología y las redes sociales son una herramienta clave. El trabajo en equipo y la empatía son fundamentales para el éxito.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección del Equipo -->
+        <section id="equipo" class="bg-green-100 py-16 md:py-24">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-green-700">Nuestro Equipo</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Miembro 1 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <img src="https://placehold.co/150x150/A3BE8C/FFFFFF?text=Miembro+1" alt="Miembro del Equipo 1" class="rounded-full mx-auto mb-4">
+                        <h4 class="text-lg font-bold text-gray-800">Nombre del Integrante</h4>
+                        <p class="text-gray-500">Rol en el Equipo</p>
+                    </div>
+                    <!-- Miembro 2 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <img src="https://placehold.co/150x150/A3BE8C/FFFFFF?text=Miembro+2" alt="Miembro del Equipo 2" class="rounded-full mx-auto mb-4">
+                        <h4 class="text-lg font-bold text-gray-800">Nombre del Integrante</h4>
+                        <p class="text-gray-500">Rol en el Equipo</p>
+                    </div>
+                    <!-- Miembro 3 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg card">
+                        <img src="https://placehold.co/150x150/A3BE8C/FFFFFF?text=Miembro+3" alt="Miembro del Equipo 3" class="rounded-full mx-auto mb-4">
+                        <h4 class="text-lg font-bold text-gray-800">Nombre del Integrante</h4>
+                        <p class="text-gray-500">Rol en el Equipo</p>
+                    </div>
+                </div>
+                <!-- Asesor -->
+                <div class="mt-12">
+                    <h4 class="text-2xl font-bold text-gray-800">Docente Asesor</h4>
+                    <p class="text-lg text-gray-600">Nombre del Docente</p>
+                    <p class="text-sm text-gray-500">Código Modular</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nueva Sección: Formulario de Contacto -->
+        <section id="contacto" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-green-700">Contáctanos</h2>
+                <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-lg card">
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input type="text" id="name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700">Mensaje</label>
+                            <textarea id="message" name="message" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required></textarea>
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-700 transition duration-300">
+                                Enviar Mensaje
+                            </button>
+                        </div>
+                    </form>
+                    <div id="contactFormMessage" class="mt-4 text-center"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Sección de Confirmación (Oculta por defecto) -->
+    <section id="confirmation-page" class="hidden flex flex-col items-center justify-center min-h-screen text-center py-16 md:py-24">
+        <div class="container mx-auto px-4 max-w-2xl bg-white p-12 rounded-3xl shadow-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-green-500 mx-auto mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-4xl md:text-5xl font-bold text-green-700 mb-4">¡Pedido Confirmado!</h2>
+            <p class="text-lg text-gray-600 mb-8">
+                Gracias por tu compra. Pronto recibirás un correo electrónico con los detalles de tu pedido.
+            </p>
+            <div id="confirmation-summary" class="text-left bg-gray-50 p-6 rounded-xl mb-8 border border-gray-200">
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">Resumen del Pedido</h3>
+                <ul id="confirmation-items" class="space-y-3 mb-4">
+                    <!-- Items del pedido se renderizarán aquí -->
+                </ul>
+                <div class="flex justify-between font-bold text-lg text-gray-800 border-t pt-4">
+                    <span>Total:</span>
+                    <span id="confirmation-total">S/ 0.00</span>
+                </div>
+            </div>
+            <button id="back-to-home-btn" class="bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-700 transition duration-300">
+                Volver al Inicio
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="main-footer" class="bg-gray-800 text-white py-8 text-center rounded-t-3xl shadow-lg">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 Proyecto Crea y Emprende Uco. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Contenedor del Carrito -->
+    <div id="cart-container" class="cart-container bg-white p-6 shadow-xl flex flex-col justify-between">
+        <div>
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-green-700">Tu Canastilla</h3>
+                <button id="close-cart-button" class="text-gray-500 hover:text-gray-800 transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="cart-items" class="space-y-4 overflow-y-auto" style="max-height: calc(100vh - 200px);">
+                <!-- Los items del carrito se renderizarán aquí -->
+            </div>
+        </div>
+        <div id="cart-summary" class="mt-6 pt-4 border-t border-gray-200">
+            <div class="flex justify-between items-center text-lg font-bold mb-4">
+                <span>Total:</span>
+                <span id="cart-total">S/ 0.00</span>
+            </div>
+            <button id="checkout-button" class="w-full bg-yellow-400 text-green-800 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 transition duration-300">
+                Pagar
+            </button>
+        </div>
+    </div>
+    <!-- Overlay del carrito -->
+    <div id="cart-overlay" class="cart-overlay hidden"></div>
+
+    <!-- Modal para errores o mensajes -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-4">Mensaje</h3>
+            <p id="modalMessageText" class="mb-6"></p>
+            <button id="closeModalButton" class="bg-green-600 text-white font-bold py-2 px-6 rounded-full hover:bg-green-700 transition duration-300">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Initialization
+        const firebaseConfig = {
+          apiKey: "AIzaSyCI9UHmWfR8WGkbo-dNVGKwtynzEa_ButE",
+          authDomain: "emprendimieto-uco.firebaseapp.com",
+          projectId: "emprendimieto-uco",
+          storageBucket: "emprendimieto-uco.firebasestorage.app",
+          messagingSenderId: "567820490048",
+          appId: "1:567820490048:web:9d4415fde6de8b1df156a5",
+          measurementId: "G-F9D2GCN5QY"
+        };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        if (!firebaseConfig.apiKey) {
+          console.error("⚠️ ERROR: No se ha configurado Firebase. Edita __firebase_config con tus credenciales reales.");
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        let userId;
+        
+        async function authenticate() {
+            try {
+                // Check if an auth token is provided by the environment
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                userId = auth.currentUser.uid;
+                console.log("Firebase authenticated successfully. User ID:", userId);
+            } catch (error) {
+                console.error("Firebase authentication failed:", error);
+            }
+        }
+
+        authenticate();
+
+        const form = document.getElementById('contactForm');
+        const contactFormMessage = document.getElementById('contactFormMessage');
+        const mainContent = document.getElementById('main-content');
+        const confirmationPage = document.getElementById('confirmation-page');
+        const backToHomeBtn = document.getElementById('back-to-home-btn');
+        const checkoutButton = document.getElementById('checkout-button');
+        const confirmationItemsList = document.getElementById('confirmation-items');
+        const confirmationTotalSpan = document.getElementById('confirmation-total');
+        const modal = document.getElementById('messageModal');
+        const modalMessageText = document.getElementById('modalMessageText');
+        const closeModalButton = document.getElementById('closeModalButton');
+
+        function showModal(message) {
+            modalMessageText.textContent = message;
+            modal.style.display = 'flex';
+        }
+
+        closeModalButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            contactFormMessage.textContent = 'Enviando...';
+            contactFormMessage.classList.remove('text-red-500', 'text-green-500');
+            contactFormMessage.classList.add('text-gray-500');
+
+            if (!userId) {
+                console.error("Authentication not complete. Retrying...");
+                await authenticate();
+                if (!userId) {
+                    contactFormMessage.textContent = 'Error: No se pudo autenticar. Intenta de nuevo.';
+                    contactFormMessage.classList.remove('text-gray-500');
+                    contactFormMessage.classList.add('text-red-500');
+                    return;
+                }
+            }
+
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                message: formData.get('message'),
+                timestamp: new Date()
+            };
+
+            try {
+                // Path para datos públicos
+                const collectionPath = `artifacts/${appId}/public/data/contact-messages`;
+                await addDoc(collection(db, collectionPath), data);
+                contactFormMessage.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.';
+                contactFormMessage.classList.remove('text-gray-500');
+                contactFormMessage.classList.add('text-green-500');
+                form.reset();
+            } catch (error) {
+                console.error("Error al enviar el mensaje:", error);
+                contactFormMessage.textContent = 'Error al enviar el mensaje. Intenta de nuevo más tarde.';
+                contactFormMessage.classList.remove('text-gray-500');
+                contactFormMessage.classList.add('text-red-500');
+            }
+        });
+
+        // Lógica de la Canastilla (Shopping Cart)
+        
+        const cartButton = document.getElementById('cart-button');
+        const closeCartButton = document.getElementById('close-cart-button');
+        const cartContainer = document.getElementById('cart-container');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCountSpan = document.getElementById('cart-count');
+        const cartTotalSpan = document.getElementById('cart-total');
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+        const notificationMessage = document.getElementById('notification-message');
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center">La canastilla está vacía.</p>';
+            } else {
+                cart.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('flex', 'justify-between', 'items-center', 'bg-gray-100', 'p-3', 'rounded-lg', 'shadow-sm');
+                    itemElement.innerHTML = `
+                        <div>
+                            <p class="font-bold text-gray-800">${item.name}</p>
+                            <p class="text-sm text-gray-600">S/ ${item.price.toFixed(2)} x ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="remove-from-cart-btn text-red-500 hover:text-red-700 transition duration-300" data-id="${item.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1H4a1 1 0 00-1 1v3M2 7h20" />
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                    total += item.price * item.quantity;
+                });
+            }
+            cartTotalSpan.textContent = `S/ ${total.toFixed(2)}`;
+            cartCountSpan.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function showNotification(message) {
+            notificationMessage.textContent = message;
+            notificationMessage.classList.remove('hidden');
+            notificationMessage.classList.add('active');
+            setTimeout(() => {
+                notificationMessage.classList.remove('active');
+                // Use a short delay to hide the element completely after the animation
+                setTimeout(() => {
+                    notificationMessage.classList.add('hidden');
+                }, 300);
+            }, 3000); // Ocultar después de 3 segundos
+        }
+
+        function addToCart(product) {
+            const existingItem = cart.find(item => item.id === product.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            renderCart();
+            showNotification(`¡${product.name} añadido a la canastilla!`);
+        }
+
+        function removeFromCart(productId) {
+            const itemIndex = cart.findIndex(item => item.id === productId);
+            if (itemIndex > -1) {
+                cart.splice(itemIndex, 1);
+                renderCart();
+            }
+        }
+        
+        // Event Listeners para la canastilla
+        cartButton.addEventListener('click', () => {
+            cartContainer.classList.add('active');
+            cartOverlay.classList.remove('hidden');
+        });
+
+        closeCartButton.addEventListener('click', () => {
+            cartContainer.classList.remove('active');
+            cartOverlay.classList.add('hidden');
+        });
+
+        cartOverlay.addEventListener('click', () => {
+            cartContainer.classList.remove('active');
+            cartOverlay.classList.add('hidden');
+        });
+        
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const productElement = e.target.closest('.card');
+                const product = {
+                    id: productElement.dataset.id,
+                    name: productElement.dataset.name,
+                    price: parseFloat(productElement.dataset.price)
+                };
+                addToCart(product);
+            });
+        });
+
+        cartItemsContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-from-cart-btn')) {
+                const button = e.target.closest('.remove-from-cart-btn');
+                const productId = button.dataset.id;
+                removeFromCart(productId);
+            }
+        });
+
+        // Lógica para el botón de "Pagar"
+        checkoutButton.addEventListener('click', async () => {
+            if (cart.length === 0) {
+                showModal('Tu canastilla está vacía. Por favor, añade productos antes de pagar.');
+                return;
+            }
+
+            if (!userId) {
+                console.error("Authentication not complete. Retrying...");
+                await authenticate();
+                if (!userId) {
+                    showModal('Error: No se pudo autenticar para procesar el pago. Intenta de nuevo.');
+                    return;
+                }
+            }
+
+            try {
+                // Prepara los datos del pedido para guardarlos en Firestore
+                const orderData = {
+                    userId: userId,
+                    items: cart,
+                    total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+                    timestamp: new Date()
+                };
+
+                // Path para datos públicos, ya que varios usuarios pueden hacer pedidos
+                const collectionPath = `artifacts/${appId}/public/data/orders`;
+                await addDoc(collection(db, collectionPath), orderData);
+
+                // Muestra la página de confirmación y oculta el resto
+                cartContainer.classList.remove('active');
+                cartOverlay.classList.add('hidden');
+                mainContent.classList.add('hidden');
+                document.getElementById('main-footer').classList.add('hidden');
+                confirmationPage.classList.remove('hidden');
+
+                // Rellena el resumen del pedido en la página de confirmación
+                confirmationItemsList.innerHTML = '';
+                let confirmationTotal = 0;
+                cart.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('flex', 'justify-between');
+                    listItem.innerHTML = `
+                        <span>${item.name} (x${item.quantity})</span>
+                        <span>S/ ${(item.price * item.quantity).toFixed(2)}</span>
+                    `;
+                    confirmationItemsList.appendChild(listItem);
+                    confirmationTotal += item.price * item.quantity;
+                });
+                confirmationTotalSpan.textContent = `S/ ${confirmationTotal.toFixed(2)}`;
+
+                // Limpia la canastilla después de un pedido exitoso
+                cart = [];
+                renderCart();
+                localStorage.removeItem('cart');
+            } catch (error) {
+                console.error("Error al procesar el pago:", error);
+                showModal('Hubo un error al procesar tu pedido. Por favor, intenta de nuevo más tarde.');
+            }
+        });
+
+        backToHomeBtn.addEventListener('click', () => {
+            confirmationPage.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+            // Podrías hacer un scroll suave al inicio de la página aquí si lo prefieres
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+
+        // Inicializar la canastilla al cargar la página
+        renderCart();
+    </script>
+</body>
+</html>
+
+
+
+
+

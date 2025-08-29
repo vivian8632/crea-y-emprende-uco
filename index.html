@@ -188,6 +188,50 @@
             </div>
         </section>
 
+                <section id="catalogo" class="py-16 md:py-24 bg-white">
+          <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-green-700">Catálogo de Productos</h2>
+        
+            <!-- Tabs de categorías -->
+            <div class="flex justify-center gap-6 mb-8">
+              <button class="tab-btn bg-green-600 text-white px-6 py-2 rounded-full shadow hover:bg-green-700" data-category="textileria">Textilería</button>
+              <button class="tab-btn bg-green-600 text-white px-6 py-2 rounded-full shadow hover:bg-green-700" data-category="queso">Queso Artesanal</button>
+              <button class="tab-btn bg-green-600 text-white px-6 py-2 rounded-full shadow hover:bg-green-700" data-category="lacteos">Lácteos</button>
+            </div>
+        
+            <!-- Contenedor de productos -->
+            <div id="catalogo-productos" class="grid md:grid-cols-3 gap-8">
+              <!-- Ejemplo de productos, se filtran con JS -->
+              <!-- Textilería -->
+              <div class="producto-card bg-gray-50 p-6 rounded-2xl shadow card" data-category="textileria">
+                <img src="https://placehold.co/200x200/FAB005/FFFFFF?text=Chalina" class="rounded-lg mx-auto mb-4" alt="Chalina Artesanal">
+                <h4 class="text-xl font-bold mb-2">Chalina Artesanal</h4>
+                <p class="text-gray-600 mb-2">Hecha a mano con lana natural de Uco.</p>
+                <p class="text-green-600 font-bold mb-4">S/ 40.00</p>
+                <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600">Añadir a la Canastilla</button>
+              </div>
+        
+              <!-- Queso Artesanal -->
+              <div class="producto-card bg-gray-50 p-6 rounded-2xl shadow card" data-category="queso">
+                <img src="https://placehold.co/200x200/A3BE8C/FFFFFF?text=Queso+Maduro" class="rounded-lg mx-auto mb-4" alt="Queso Maduro">
+                <h4 class="text-xl font-bold mb-2">Queso Maduro</h4>
+                <p class="text-gray-600 mb-2">Queso con un proceso de maduración natural.</p>
+                <p class="text-green-600 font-bold mb-4">S/ 30.00</p>
+                <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600">Añadir a la Canastilla</button>
+              </div>
+        
+              <!-- Lácteos -->
+              <div class="producto-card bg-gray-50 p-6 rounded-2xl shadow card" data-category="lacteos">
+                <img src="https://placehold.co/200x200/98C1D9/FFFFFF?text=Leche+Fresca" class="rounded-lg mx-auto mb-4" alt="Leche Fresca">
+                <h4 class="text-xl font-bold mb-2">Leche Fresca</h4>
+                <p class="text-gray-600 mb-2">Leche fresca de vaca, 100% natural y nutritiva.</p>
+                <p class="text-green-600 font-bold mb-4">S/ 5.00</p>
+                <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600">Añadir a la Canastilla</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Sección de Productos Destacados (Carrusel) -->
         <section id="productos" class="bg-green-100 py-16 md:py-24">
             <div class="container mx-auto px-4 text-center">
@@ -704,6 +748,7 @@
     </script>
 </body>
 </html>
+
 
 
 

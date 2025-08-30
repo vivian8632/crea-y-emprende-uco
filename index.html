@@ -165,7 +165,7 @@
                     </div>
                     <!-- Imagen representativa -->
                     <div class="hidden md:block">
-                        <img src="https://placehold.co/600x400/98C1D9/FFFFFF?text=IDEAS+QUE+GIRAN+CONECTAN+Y+AVANZAN" alt="Imagen de negocios en Uco" class="rounded-2xl shadow-lg w-full h-auto">
+                        <img src="images/lacteos" alt="Imagen de negocios en Uco" class="rounded-2xl shadow-lg w-full h-auto">
                     </div>
                 </div>
                 
@@ -193,7 +193,9 @@
 <!-- Nueva Sección: Catálogo por Categorías -->
 <section id="catalogo" class="py-16 md:py-24 bg-white">
   <div class="container mx-auto px-4 text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-12 text-green-700">Catálogo de Productos y Servicios</h2>
+    <h2 id="catalogo-title" class="text-3xl md:text-4xl font-bold mb-12 text-green-700">
+      Catálogo de Productos y Servicios
+    </h2>
 
     <!-- Vista inicial: categorías -->
     <div id="categorias-grid" class="grid md:grid-cols-5 gap-8">
@@ -201,11 +203,6 @@
       <div class="categoria-card cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-lg transition" data-category="textileria">
         <img src="images/textileria_p.jpg" alt="Textilería" class="rounded-lg mx-auto mb-4 h-40 w-full object-cover">
         <h3 class="text-xl font-bold text-green-600">Textilería</h3>
-      </div>
-      <!-- Queso Artesanal -->
-      <div class="categoria-card cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-lg transition" data-category="queso">
-        <img src="images/queso_p.jpg" alt="Queso Artesanal" class="rounded-lg mx-auto mb-4 h-40 w-full object-cover">
-        <h3 class="text-xl font-bold text-green-600">Queso Artesanal</h3>
       </div>
       <!-- Lácteos -->
       <div class="categoria-card cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-lg transition" data-category="lacteos">
@@ -444,9 +441,7 @@
     queso: [
       { nombre: "Queso Corazón", precio: 15, imagen: "images/queso_corazon.jpg" },
       { nombre: "Queso Cuadrado", precio: 20, imagen: "images/queso_cuadrado.jpg" },
-      { nombre: "Queso Normal", precio: 15, imagen: "images/queso_normal.jpg" }
-    ],
-    lacteos: [
+      { nombre: "Queso Normal", precio: 15, imagen: "images/queso_normal.jpg" },
       { nombre: "Yogurt y Manjar", precio: 5, imagen: "images/lacteos1.jpg" }
     ],
     agricultura: [
@@ -458,7 +453,7 @@
       { nombre: "Pampa", video: "videos/turismo_2.mp4" },
       { nombre: "Pampa", video: "videos/turismo_3.mp4" },
       { nombre: "Pampa", video: "videos/turismo_4.mp4" },
-      { nombre: "Pampa", video: "videos/turismo_5.mp4" },
+      { nombre: "Nuestra Hermosa Rana", video: "videos/turismo_5.mp4" },
       { nombre: "Pampa", imagen: "images/turismo_1.jpg" },
       { nombre: "Cuy de pradera", imagen: "images/turismo_6.jpg" },
       { nombre: "Hermoso cielo", imagen: "images/turismo_7.jpg" },
@@ -474,39 +469,50 @@
   };
 
   // Mostrar productos al hacer clic en categoría
-  document.querySelectorAll(".categoria-card").forEach(card => {
-    card.addEventListener("click", () => {
-      const categoria = card.dataset.category;
-      categoriasGrid.classList.add("hidden");
-      productosGrid.classList.remove("hidden");
-      productosList.innerHTML = "";
+  const catalogoTitle = document.getElementById("catalogo-title");
 
-      catalogo[categoria].forEach(prod => {
-        const div = document.createElement("div");
-        div.className = "bg-gray-50 p-6 rounded-2xl shadow card";
-        div.innerHTML = `
-  ${prod.video 
-  ? `<video controls class="rounded-lg mx-auto mb-4 w-full h-72 object-cover shadow">
-       <source src="${prod.video}" type="video/mp4">
-       Tu navegador no soporta el video.
-     </video>` 
-  : `<img src="${prod.imagen}" alt="${prod.nombre}" class="rounded-lg mx-auto mb-4 h-72 w-full object-cover">`}
-  <h4 class="text-xl font-bold mb-2">${prod.nombre}</h4>
-  ${prod.precio ? `<p class="text-green-600 font-bold mb-4">S/ ${prod.precio.toFixed(2)}</p>` : ""}
-  <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600">
-    ${prod.precio ? "Añadir a la Canastilla" : "Más información"}
-  </button>
-`;
-        productosList.appendChild(div);
-      });
+document.querySelectorAll(".categoria-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const categoria = card.dataset.category;
+
+    // 🔹 Cambiar el título dinámicamente
+    if (categoria === "turismo") {
+      catalogoTitle.textContent = "Catálogo de Servicios";
+    } else {
+      catalogoTitle.textContent = "Catálogo de Productos";
+    }
+
+    // Mostrar productos de la categoría
+    categoriasGrid.classList.add("hidden");
+    productosGrid.classList.remove("hidden");
+    productosList.innerHTML = "";
+
+    catalogo[categoria].forEach(prod => {
+      const div = document.createElement("div");
+      div.className = "bg-gray-50 p-6 rounded-2xl shadow card";
+      div.innerHTML = `
+        ${prod.video 
+          ? `<video controls class="rounded-lg mx-auto mb-4 w-full h-72 object-cover shadow">
+               <source src="${prod.video}" type="video/mp4">
+             </video>`
+          : `<img src="${prod.imagen}" alt="${prod.nombre}" class="rounded-lg mx-auto mb-4 h-72 w-full object-cover">`}
+        <h4 class="text-xl font-bold mb-2">${prod.nombre}</h4>
+        ${prod.precio ? `<p class="text-green-600 font-bold mb-4">S/ ${prod.precio.toFixed(2)}</p>` : ""}
+        <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600">
+          ${prod.precio ? "Añadir a la Canastilla" : "Más información"}
+        </button>
+      `;
+      productosList.appendChild(div);
     });
   });
+});
 
   // Volver a categorías
   volverBtn.addEventListener("click", () => {
-    productosGrid.classList.add("hidden");
-    categoriasGrid.classList.remove("hidden");
-  });
+  productosGrid.classList.add("hidden");
+  categoriasGrid.classList.remove("hidden");
+  catalogoTitle.textContent = "Catálogo de Productos y Servicios"; // restaurar el título original
+});
 </script>
 
     <script src="firebase-config.js"></script>
@@ -804,6 +810,7 @@
     </script>
 </body>
 </html>
+
 
 
 

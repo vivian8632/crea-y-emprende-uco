@@ -199,22 +199,22 @@
     <div id="categorias-grid" class="grid md:grid-cols-5 gap-8">
       <!-- Textilería -->
       <div class="categoria-card cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-lg transition" data-category="textileria">
-        <img src="images/textileria_p.jpg" alt="Textilería" class="rounded-lg mx-auto mb-4 h-40 w-full object-cover">
+        <img src="images/textileria_p.jpg" alt="Textilería" class="rounded-lg mx-auto mb-4 h-60 w-full object-cover">
         <h3 class="text-xl font-bold text-green-600">Textilería</h3>
       </div>
       <!-- Lácteos -->
       <div class="categoria-card cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-lg transition" data-category="lacteos">
-        <img src="images/queso_corazon.jpg" alt="Lácteos" class="rounded-lg mx-auto mb-4 h-40 w-full object-cover">
+        <img src="images/queso_corazon.jpg" alt="Lácteos" class="rounded-lg mx-auto mb-4 h-60 w-full object-cover">
         <h3 class="text-xl font-bold text-green-600">Productos Lácteos</h3>
       </div>
       <!-- Agricultura -->
       <div class="categoria-card cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-lg transition" data-category="agricultura">
-        <img src="images/agricultura.jpg" alt="Agricultura" class="rounded-lg mx-auto mb-4 h-40 w-full object-cover">
+        <img src="images/agricultura.jpg" alt="Agricultura" class="rounded-lg mx-auto mb-4 h-60 w-full object-cover">
         <h3 class="text-xl font-bold text-green-600">Agricultura</h3>
       </div>
       <!-- Turismo -->
       <div class="categoria-card cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-lg transition" data-category="turismo">
-        <img src="images/turismo_p.jpg" alt="Turismo" class="rounded-lg mx-auto mb-4 h-40 w-full object-cover">
+        <img src="images/turismo_p.jpg" alt="Turismo" class="rounded-lg mx-auto mb-4 h-60 w-full object-cover">
         <h3 class="text-xl font-bold text-green-600">Turismo</h3>
       </div>
     </div>
@@ -500,7 +500,7 @@ document.querySelectorAll(".categoria-card").forEach(card => {
           ? `<video controls class="rounded-lg mx-auto mb-4 w-full h-72 object-cover shadow">
                <source src="${prod.video}" type="video/mp4">
              </video>`
-          : `<img src="${prod.imagen}" alt="${prod.nombre}" class="rounded-lg mx-auto mb-4 h-72 w-full object-cover">`}
+          : `<img src="${prod.imagen}" alt="${prod.nombre}" class="rounded-lg mx-auto mb-4 h-100 w-full object-cover">`}
         <h4 class="text-xl font-bold mb-2">${prod.nombre}</h4>
         ${prod.precio ? `<p class="text-green-600 font-bold mb-4">S/ ${prod.precio.toFixed(2)}</p>` : ""}
         <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600">
@@ -815,6 +815,7 @@ document.querySelectorAll(".categoria-card").forEach(card => {
     </script>
 </body>
 </html>
+
 
 
 

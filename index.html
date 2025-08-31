@@ -439,7 +439,7 @@
         { nombre: "Cuellera", precio: 15, imagen: "images/cuellera.jpg" },
         { nombre: "Medias de lana", precio: 15, imagen: "images/Medias_lana.jpg" },
         { nombre: "Tiara", precio: 20, imagen: "images/tiara_.jpg" },
-        { nombre: "Vincha", precio: 20, imagen: "images/Yogurt_.jpg" }
+        { nombre: "Vincha", precio: 20, imagen: "images/vincha.jpg" }
     ],
     lacteos: [
       { nombre: "Queso Corazón", precio: 15, imagen: "images/queso_corazon.jpg" },
@@ -500,7 +500,7 @@ document.querySelectorAll(".categoria-card").forEach(card => {
           ? `<video controls class="rounded-lg mx-auto mb-4 w-full h-72 object-cover shadow">
                <source src="${prod.video}" type="video/mp4">
              </video>`
-          : `<img src="${prod.imagen}" alt="${prod.nombre}" class="rounded-lg mx-auto mb-4 h-100 w-full object-cover">`}
+          : `<img src="${prod.imagen}" alt="${prod.nombre}" class="rounded-lg mx-auto mb-4 h-[120px] w-full object-cover">`}
         <h4 class="text-xl font-bold mb-2">${prod.nombre}</h4>
         ${prod.precio ? `<p class="text-green-600 font-bold mb-4">S/ ${prod.precio.toFixed(2)}</p>` : ""}
         <button class="add-to-cart-btn bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600">
@@ -815,6 +815,7 @@ document.querySelectorAll(".categoria-card").forEach(card => {
     </script>
 </body>
 </html>
+
 
 
 
